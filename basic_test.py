@@ -11,7 +11,7 @@ from drone_control_nogps import Drone
 
 try:
     
-    drone = Drone(serial_address='/dev/ttyTHS1', baud=57600)
+    drone = Drone(serial_address='/dev/ttyTHS0', baud=57600)
 
     print("ready ")
     while(True):

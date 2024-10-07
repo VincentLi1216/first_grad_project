@@ -48,11 +48,6 @@ class Drone:
                 print("Success!")
                 break
             time.sleep(1)
-
-    def arm_and_takeoff_nogps(self, aTargetAltitude):
-        """
-        Arms vehicle and fly to aTargetAltitude without GPS data.
-        """
         
 
     
@@ -104,9 +99,18 @@ class Drone:
             self.send_attitude_target(roll_angle=0, pitch_angle=0, thrust = thrust, takeoff=True)
             # self.send_attitude_target(roll_angle=0, pitch_angle=0, yaw_angle=0, use_yaw_rate=False, thrust = thrust)
             if time.time()-start>8:
+                print("Fail to Takeoff!")
+                self.land()
                 raise ValueError("Fail to Takeoff!")
 
             time.sleep(0.05)
+
+    def arm_and_takeoff_nogps(self, aTargetAltitude):
+        self.arm_nogps()
+        self.takeoff_nogps(aTargetAltitude)
+        """
+        Arms vehicle and fly to aTargetAltitude without GPS data.
+        """
 
     def send_attitude_target(self, roll_angle = 0.0, pitch_angle = 0.0,
                              yaw_angle = None, yaw_rate = 0.0, use_yaw_rate = True,
@@ -270,3 +274,17 @@ class Drone:
 
         self.vehicle.send_mavlink(reboot_msg)
         '''
+
+if __name__ == "__main__":
+    drone = Drone(serial_address='/dev/ttyTHS0', baud=57600)
+
+    try: 
+        drone.arm_and_takeoff_nogps(1.0)
+        time.sleep(10)
+
+        drone.land()
+    except Exception as e:
+        print(e)
+    finally:
+        drone.land()
+        drone.vehicle.close()
